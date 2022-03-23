@@ -1,0 +1,119 @@
+OBJECT Codeunit 50098 ClassVRroom Inserts
+{
+  OBJECT-PROPERTIES
+  {
+    Date=21/03/22;
+    Time=17:52:44;
+    Modified=Yes;
+    Version List=;
+  }
+  PROPERTIES
+  {
+    OnRun=BEGIN
+            CR := 13; // Carriage Return - (Hex $0D)
+            LF := 10; // Line Feed - (Hex $0A)
+
+            Taula := Window.InputBox('1: Insertar a taula MenuVRroom'+FORMAT(CR)+FORMAT(LF)+
+                                      '2: Insertar a taula SubMenuVRroom'+FORMAT(CR)+FORMAT(LF)+
+                                      '3: Mostrar taula MenuVRroom', 'Taules a insertar', '', 100, 100);
+            CASE Taula OF
+              '1':
+                BEGIN
+                  TaulaMenu()
+                END;
+              '2':
+                BEGIN
+                  TaulaSubMenu();
+                END;
+              '3':
+                BEGIN
+                  MostrarTaulaMenu();
+                END;
+            END;
+          END;
+
+  }
+  CODE
+  {
+    VAR
+      Window@1106000000 : DotNet "'Microsoft.VisualBasic, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'.Microsoft.VisualBasic.Interaction" RUNONCLIENT;
+      MenuVR@1106000002 : Record 50050;
+      SubMenuVR@1106000003 : Record 50049;
+      CR@1106000005 : Char;
+      LF@1106000004 : Char;
+      Taula@1106000001 : Text;
+      Files@1106000006 : Text;
+      Valor@1106000007 : Text;
+      MenuDialeg@1106000008 : Dialog;
+      Myint@1106000011 : Integer;
+      ValorNum@1106000009 : Integer;
+
+    LOCAL PROCEDURE TaulaMenu@1106000003();
+    BEGIN
+      Files := Window.InputBox('Introdueix la quantitat de Menus a afegir:', 'Quantitat de dades a insertar', '', 100, 100);
+      EVALUATE(Myint,Files);
+      WHILE Myint <> 0 DO BEGIN
+        Valor := Window.InputBox('IdMenu:', 'Dades a insertar', '', 100, 100);
+        EVALUATE(ValorNum,Valor);
+        MenuVR.IdMenu := ValorNum;
+        Valor := Window.InputBox('DescripcioElementMenu:', 'Dades a insertar', '', 100, 100);
+        MenuVR.DescripcioElementMenu := Valor;
+        MenuVR.INSERT;
+        MenuVR.INIT;
+        Myint := Myint - 1;
+      END;
+    END;
+
+    LOCAL PROCEDURE TaulaSubMenu@1106000004();
+    BEGIN
+      Files := Window.InputBox('Introdueix la quantitat de SubMenus a afegir:', 'Quantitat de dades a insertar', '', 100, 100);
+      EVALUATE(Myint,Files);
+      WHILE Myint <> 0 DO BEGIN
+        Valor := Window.InputBox('IdSubMenu:', 'Dades a insertar', '', 100, 100);
+        EVALUATE(ValorNum,Valor);
+        SubMenuVR.IdSubMenu := ValorNum;
+        Valor := Window.InputBox('IdMenu:', 'Dades a insertar', '', 100, 100);
+        EVALUATE(ValorNum,Valor);
+        SubMenuVR.IdMenu := ValorNum;
+        Valor := Window.InputBox('DescripcioElementSubmenu:', 'Dades a insertar', '', 100, 100);
+        SubMenuVR.DescripcioElementSubmenu := Valor;
+        Valor := Window.InputBox('NomPageReport:', 'Dades a insertar', '', 100, 100);
+        SubMenuVR.NomPageReport:= Valor;
+        Valor := Window.InputBox('TipusConsulta:', 'Dades a insertar', '', 100, 100);
+        SubMenuVR.TipusConsulta := Valor;
+        SubMenuVR.INSERT;
+        SubMenuVR.INIT;
+        Myint := Myint - 1;
+      END;
+    END;
+
+    LOCAL PROCEDURE MostrarTaulaMenu@1106000000();
+    BEGIN
+      BEGIN
+          MenuDialeg.OPEN('Taula MenuVRroom\IdMenu #1######\DescripcioElementMenu #2######');
+          WITH MenuVR DO BEGIN
+            REPEAT
+              MenuDialeg.UPDATE(1, MenuVR.IdMenu);
+              MenuDialeg.UPDATE(2, MenuVR.DescripcioElementMenu);
+              SLEEP(1000);
+            UNTIL NEXT = 0;
+          END;
+          MenuDialeg.OPEN('Taula SubMenuVRroom\IdMenu #1######\IdSubMenu #2######\DescripcioElementMenu #3######\NomPageReport #4######\TipusConsulta #5######');
+          WITH SubMenuVR DO BEGIN
+            REPEAT
+              MenuDialeg.UPDATE(2, SubMenuVR.IdSubMenu);
+              MenuDialeg.UPDATE(1, SubMenuVR.IdMenu);
+              MenuDialeg.UPDATE(3, SubMenuVR.DescripcioElementSubmenu);
+              MenuDialeg.UPDATE(4, SubMenuVR.NomPageReport);
+              MenuDialeg.UPDATE(5, SubMenuVR.TipusConsulta);
+              SLEEP(1000);
+            UNTIL NEXT = 0;
+          END;
+        END;
+    END;
+
+    BEGIN
+    END.
+  }
+}
+
