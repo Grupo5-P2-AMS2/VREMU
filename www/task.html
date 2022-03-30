@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="css/index.css">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+        <meta name="color-scheme" content="light dark">
+        <title>Fill out task form</title>
+    </head>
+    <body>
+        <div class="fill-task-page">
+            <div class="form">
+                <form class="fill-task-form">
+                    <input type="passed_items" id="passed_items" placeholder="Passed items"/>
+                    <input type="failed_items" id="failed_items" placeholder="Failed items"/>
+                    <input type="grade" id="grade" placeholder="Grade %"/>
+                    <input type="comments" id="comments" placeholder="Comments"/>
+                    <a class="sendDataButton">send task data</a>
+                 </form>
+            </div>
+        </div>
+        <script src="cordova.js"></script>
+        <script type="text/javascript" src="js/jquery-1.11.1.min.js" id="cordova-jquery"></script>
+        <script src="js/index.js"></script>
+    </body>
+</html>
