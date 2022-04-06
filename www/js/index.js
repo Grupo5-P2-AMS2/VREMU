@@ -14,6 +14,7 @@ function onDeviceReady() {
                 localStorage.setItem("current-username", info['username'])
                 localStorage.setItem("current-vr-task", info['VRexerciceID'])
                 localStorage.setItem("current-pin", $('#pinnumber').val())
+                localStorage.setItem("exercise-id", $('#exercise_id').val())
                 window.location.assign('task.html');
             } else if (info["status"] != "OK"){
                 alert(info["message"])
@@ -27,18 +28,21 @@ function onDeviceReady() {
         $.ajax({
             method: "POST",
             url: localStorage.getItem("URL")+"/api/finish_vr_exercise",
-            body: JSON.stringify({"pin" : localStorage.getItem("current-pin"),
-                "passed_items" : $('#passed_items').val(),
-                "failed_items" : $('#failed_items').val(),
-                "grade" : $('#grade').val(),
-                "comments" : $('#comments').val()}),
+            data: JSON.stringify({"pin" : localStorage.getItem("current-pin"),
+                "autograde":{
+                    "passed_items" : $('#passed_items').val(),
+                    "failed_items" : $('#failed_items').val(),
+                    "grade" : $('#grade').val(),
+                    "comments" : $('#comments').val()
+                },
+                "VRexerciseID": localStorage.getItem("exercise-id"),
+                "exerciseVersionID": $('#exercise_version_id').val()
+            }),
             dataType: "json",
+            contentType: "application/json",
         }).done(function (info) {        
-            if (info["status"] == "OK"){
-                console.log(info)
-            } else if (info["status"] != "OK"){
-                alert(info["message"])
-            }
+            console.log(info)
+            alert(info["message"])
         }).fail(function () {
             alert("URL incorrecta, por favor introduzca una url valida.");
         });
